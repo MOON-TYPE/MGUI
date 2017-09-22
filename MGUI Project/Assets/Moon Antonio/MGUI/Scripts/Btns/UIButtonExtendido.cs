@@ -22,15 +22,15 @@ namespace MoonAntonio.MGUI.UI
 	[AddComponentMenu("Moon Antonio/MGUI/UI/UIButtonExtendido")]
 	public class UIButtonExtendido : Button
 	{
-		#region Eventos
-		[Serializable] public class StateChangeEvent : UnityEvent<Estados, bool> { }
-		#endregion
-
 		#region Variables Publicas
 		/// <summary>
 		/// <para>El evento de cambio de estado.</para>
 		/// </summary>
 		public StateChangeEvent onCambiaEstado = new StateChangeEvent();         // El evento de cambio de estado
+		#endregion
+
+		#region Eventos
+		[Serializable] public class StateChangeEvent : UnityEvent<Estados, bool> { }
 		#endregion
 
 		#region Metodos Publicos
