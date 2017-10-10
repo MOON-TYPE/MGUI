@@ -27,7 +27,19 @@ namespace MoonAntonio.MGUI
 		/// <summary>
 		/// <para>Control del tween.</para>
 		/// </summary>
-		[NonSerialized] private readonly TweenRunner<FloatTween> tweenRun;					// Control del tween
+		[NonSerialized] private readonly TweenRunner<FloatTween> tweenRun;                  // Control del tween
+		/// <summary>
+		/// <para>Canvas group del panel.</para>
+		/// </summary>
+		private CanvasGroup canvasGroup;                                                    // Canvas group del panel
+		/// <summary>
+		/// <para>Estado inicial del panel.</para>
+		/// </summary>
+		private Estado estadoInicial = Estado.Ocultado;                                     // Estado inicial del panel
+		/// <summary>
+		/// <para>Estado actual del panel.</para>
+		/// </summary>
+		private Estado estadoActual = Estado.Ocultado;										// Estado actual del panel
 		#endregion
 
 		#region Constructor Interno
@@ -41,6 +53,65 @@ namespace MoonAntonio.MGUI
 
 			// Iniciar el tween
 			this.tweenRun.Init(this);
+		}
+		#endregion
+
+		#region Inicializadores
+		/// <summary>
+		/// <para>Cargador de <see cref="UIPanel"/>.</para>
+		/// </summary>
+		protected virtual void Awake()// Cargador de UIPanel
+		{
+			// Obtener el canvas group
+			this.canvasGroup = this.gameObject.GetComponent<CanvasGroup>();
+
+			// Transicion al estado inicial
+			if (Application.isPlaying) this.AplicarEstadoInicial(this.estadoInicial);
+		}
+		#endregion
+
+		#region Metodos Internos
+		/// <summary>
+		/// <para>Aplica el estado inicial.</para>
+		/// </summary>
+		/// <param name="estado">El nuevo estado de transicion.</param>
+		protected virtual void AplicarEstadoInicial(Estado estado)// Aplica el estado inicial
+		{
+			// Obtener el nuevo alpha
+			float targetAlpha = (estado == Estado.Mostrado) ? 1f : 0f;
+
+			// Fija el alpha del canvas group
+			this.SetAlphaCanvas(targetAlpha);
+
+			// Guardar el estado
+			this.estadoActual = estado;
+
+			// Si estamos realizando la transicion para mostrar, habilitar el blocksRaycasts
+			if (estado == Estado.Mostrado)
+			{
+				this.canvasGroup.blocksRaycasts = true;
+				this.canvasGroup.interactable = true;
+			}
+		}
+
+		/// <summary>
+		/// <para>Selecciona el alpha del canvas group.</para>
+		/// </summary>
+		/// <param name="alpha">Alpha.</param>
+		protected void SetAlphaCanvas(float alpha)// Selecciona el alpha del canvas group
+		{
+			// Si no hay canvas group, salimos
+			if (this.canvasGroup == null) return;
+
+			// Fijar el alpha
+			this.canvasGroup.alpha = alpha;
+
+			// Si el alpha es 0, desabilitar el block raycasts
+			if (alpha == 0f)
+			{
+				this.canvasGroup.blocksRaycasts = false;
+				this.canvasGroup.interactable = false;
+			}
 		}
 		#endregion
 
