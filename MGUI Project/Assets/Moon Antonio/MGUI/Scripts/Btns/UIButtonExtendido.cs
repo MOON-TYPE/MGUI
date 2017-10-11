@@ -27,6 +27,7 @@ namespace MoonAntonio.MGUI.UI
 		/// <para>El evento de cambio de estado.</para>
 		/// </summary>
 		public StateChangeEvent onCambiaEstado = new StateChangeEvent();         // El evento de cambio de estado
+		
 		#endregion
 
 		#region Eventos

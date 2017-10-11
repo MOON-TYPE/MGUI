@@ -928,7 +928,7 @@ MonoBehaviour:
   keyEscape: 1
   transicion: 1
   tipoTransicion: 13
-  duracionTransicion: 0.55781716
+  duracionTransicion: 0.080540486
   OnTransicionInit:
     m_PersistentCalls:
       m_Calls: []

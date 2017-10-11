@@ -14,12 +14,6 @@ using UnityEditor;
 
 namespace MoonAntonio.MGUI
 {
-#if ODIN_INSPECTOR
-	public class UIPanelInspector : MonoBehaviour 
-	{
-
-	}
-#else
 	[CanEditMultipleObjects, CustomEditor(typeof(MoonAntonio.MGUI.UIPanel))]
 	public class UIPanelInspector : Editor 
 	{
@@ -108,5 +102,4 @@ namespace MoonAntonio.MGUI
 		}
 		#endregion
 	}
-#endif
 }
