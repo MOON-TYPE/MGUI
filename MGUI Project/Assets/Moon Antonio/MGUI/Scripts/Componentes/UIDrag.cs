@@ -46,9 +46,24 @@ namespace MoonAntonio.MGUI
 		#endregion
 
 		#region Clases Eventos
-		[Serializable] public class BeginDragEvent : UnityEvent<BaseEventData> { }
-		[Serializable] public class EndDragEvent : UnityEvent<BaseEventData> { }
+		[Serializable] public class DragInitEvent : UnityEvent<BaseEventData> { }
+		[Serializable] public class DragCompletadoEvent : UnityEvent<BaseEventData> { }
 		[Serializable] public class DragEvent : UnityEvent<BaseEventData> { }
+		#endregion
+
+		#region Eventos
+		/// <summary>
+		/// <para>Cuando el arrastre se inicia.</para>
+		/// </summary>
+		public DragInitEvent onDragInit = new DragInitEvent();
+		/// <summary>
+		/// The on end drag event.
+		/// </summary>
+		public DragCompletadoEvent onDragCompletada = new DragCompletadoEvent();
+		/// <summary>
+		/// The on drag event.
+		/// </summary>
+		public DragEvent onDrag = new DragEvent();
 		#endregion
 
 		#region Inicializadores

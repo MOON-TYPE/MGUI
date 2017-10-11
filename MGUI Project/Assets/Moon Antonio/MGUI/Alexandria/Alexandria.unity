@@ -376,6 +376,7 @@ GameObject:
   - component: {fileID: 978462996}
   - component: {fileID: 978462998}
   - component: {fileID: 978462997}
+  - component: {fileID: 978462999}
   m_Layer: 5
   m_Name: Header
   m_TagString: Untagged
@@ -435,6 +436,33 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 978462995}
+--- !u!114 &978462999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 978462995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9987a87d1e56c8a42b1b0c8c31ac0da4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  onDragInit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MoonAntonio.MGUI.UIDrag+DragInitEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onDragCompletada:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MoonAntonio.MGUI.UIDrag+DragCompletadoEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onDrag:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MoonAntonio.MGUI.UIDrag+DragEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1 &988221358
 GameObject:
   m_ObjectHideFlags: 0
