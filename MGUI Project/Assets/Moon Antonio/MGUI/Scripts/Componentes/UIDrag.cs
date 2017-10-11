@@ -27,7 +27,7 @@ namespace MoonAntonio.MGUI
 		/// <summary>
 		/// <para>Objetivo del arrastre.</para>
 		/// </summary>
-		private RectTransform target;												// Objetivo del arrastre
+		public RectTransform target;												// Objetivo del arrastre
 		#endregion
 
 		#region Variables Privadas
@@ -38,7 +38,11 @@ namespace MoonAntonio.MGUI
 		/// <summary>
 		/// <para>Canvas del Rect Transform.</para>
 		/// </summary>
-		private RectTransform canvasRectTransform;									// Canvas del Rect Transform
+		private RectTransform canvasRectTransform;                                  // Canvas del Rect Transform
+		/// <summary>
+		/// <para>Velocidad actual del objeto.</para>
+		/// </summary>
+		private Vector2 velocidad;													// Velocidad actual del objeto
 		#endregion
 
 		#region Clases Eventos
@@ -53,7 +57,46 @@ namespace MoonAntonio.MGUI
 		/// </summary>
 		protected override void Awake()// Cargador de UIDrag
 		{
+			// Base
 			base.Awake();
+
+			// Obtener el canvas y el rect transform
+			this.canvas = UIUtil.FindInParents<Canvas>((this.target != null) ? this.target.gameObject : this.gameObject);
+			if (this.canvas != null) this.canvasRectTransform = this.canvas.transform as RectTransform;
+		}
+		#endregion
+
+		#region API
+		#region Metodos
+		/// <summary>
+		/// <para>Detiene la inercia.</para>
+		/// </summary>
+		public void StopMovimiento()// Detiene la inercia
+		{
+			this.velocidad = Vector2.zero;
+		}
+		#endregion
+		#region Funcionalidad
+		/// <summary>
+		/// <para>Determina si el objeto esta activo.</para>
+		/// </summary>
+		/// <returns></returns>
+		public override bool IsActive()// Determina si el objeto esta activo
+		{
+			return base.IsActive() && this.target != null;
+		}
+		#endregion
+
+		#endregion
+
+		#region Metodos Internos
+		/// <summary>
+		/// <para>Cuando se cambia el transform del padre.</para>
+		/// </summary>
+		protected override void OnTransformParentChanged()// Cuando se cambia el transform del padre
+		{
+			// Base
+			base.OnTransformParentChanged();
 
 			// Obtener el canvas y el rect transform
 			this.canvas = UIUtil.FindInParents<Canvas>((this.target != null) ? this.target.gameObject : this.gameObject);
