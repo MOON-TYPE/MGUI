@@ -389,26 +389,16 @@ namespace MoonAntonio.MGUI
 		/// </summary>
 		public void PanelAlFrente()// Coloca el panel al frente
 		{
-			/*UIScene scene = UIUtil.FindInParents<UIScene>(this.gameObject);
+			Canvas canvas = UIUtil.FindInParents<Canvas>(this.gameObject);
 
-			// Si el objeto tiene una escena ui principal
-			if (scene != null && scene.content != null)
+			// Si el objeto tiene un canvas
+			if (canvas != null)
 			{
-				this.gameObject.transform.SetParent(scene.content, true);
-			}
-			else
-			{
-				Canvas canvas = UIUtil.FindInParents<Canvas>(this.gameObject);
-
-				// Si el objeto tiene un canvas
-				if (canvas != null)
-				{
-					this.gameObject.transform.SetParent(canvas.transform, true);
-				}
+				this.gameObject.transform.SetParent(canvas.transform, true);
 			}
 
 			// Establecer como ultimo hijo
-			this.gameObject.transform.SetAsLastSibling();*/
+			this.gameObject.transform.SetAsLastSibling();
 		}
 
 		/// <summary>
