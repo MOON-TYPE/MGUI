@@ -9,21 +9,12 @@
 
 #region Librerias
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEditor;
-using UnityEditor.UI;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-#if odin
-
-#endif
 #endregion
 
 namespace MoonAntonio.MGUI
 {
-#if odin
+#if ODIN_INSPECTOR
 	public class UIPanelInspector : MonoBehaviour 
 	{
 
@@ -116,9 +107,6 @@ namespace MoonAntonio.MGUI
 			EditorGUI.indentLevel = (EditorGUI.indentLevel - 1);
 		}
 		#endregion
-
-
-
 	}
 #endif
 }

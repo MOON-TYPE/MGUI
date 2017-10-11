@@ -14,6 +14,9 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections.Generic;
 using MoonAntonio.Tweens;
+#if ODIN_INSPECTOR
+using Sirenix.OdinInspector;
+#endif
 #endregion
 
 namespace MoonAntonio.MGUI
@@ -24,6 +27,42 @@ namespace MoonAntonio.MGUI
 	[DisallowMultipleComponent, ExecuteInEditMode, AddComponentMenu("MGUI/Panel", 58), RequireComponent(typeof(CanvasGroup))]
 	public class UIPanel : MonoBehaviour, IEventSystemHandler , ISelectHandler, IPointerDownHandler
 	{
+#if ODIN_INSPECTOR
+		#region Variables Privadas
+		[TabGroup("Info"), EnumToggleButtons, HideLabel, Title("Estado Actual", bold: false, horizontalLine: false), PropertyTooltip("Estado actual del panel")]
+		[SerializeField] private EstadoPanel estadoActual = EstadoPanel.Ocultado;
+
+		[TabGroup("General"), EnumToggleButtons, PropertyTooltip("Id del panel")]
+		[SerializeField] private UIPanelID panelID = UIPanelID.Ninguno;
+
+		[TabGroup("General"), PropertyTooltip("Custom id del panel")]
+		[SerializeField] private int panelCustomID = 0;
+
+		[Space]
+
+		[TabGroup("General"), EnumToggleButtons,PropertyTooltip("Estado inicial del panel")]
+		[SerializeField] private EstadoPanel estadoInicial = EstadoPanel.Ocultado;
+
+		[TabGroup("General"), EnumToggleButtons, PropertyTooltip("Tecla de escape")]
+		[SerializeField] private KeyEscapePanel keyEscape = KeyEscapePanel.Ocultar;
+
+		[TabGroup("Transicion"), PropertyTooltip("Transicion del panel")]
+		[SerializeField] private TransicionPanel transicion = TransicionPanel.Instantanea;
+
+		[TabGroup("Transicion"), PropertyTooltip("Tipo de transicion")]
+		[SerializeField] private TweenEasing tipoTransicion = TweenEasing.InOutQuint;
+
+		[TabGroup("Transicion"), ProgressBar(0, 1), PropertyTooltip("Duracion de la transicion del panel")]
+		[SerializeField] private float duracionTransicion = 0.1f;
+
+		[Space]
+
+		protected bool isFocus = false;
+		protected static UIPanel focusPanel;
+		[NonSerialized] private readonly TweenRunner<FloatTween> tweenRun;
+		private CanvasGroup canvasGroup;
+		#endregion
+#else
 		#region Variables Privadas
 		/// <summary>
 		/// <para>Determina si el panel tiene el foco.</para>
@@ -74,6 +113,7 @@ namespace MoonAntonio.MGUI
 		/// </summary>
 		[SerializeField] private float duracionTransicion = 0.1f;							// Duracion de la transicion del panel
 		#endregion
+#endif
 
 		#region Propiedades
 		/// <summary>
