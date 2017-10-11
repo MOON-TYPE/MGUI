@@ -921,14 +921,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b32107571b89e7e4db5c104b8bfa8b29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  estadoActual: 1
-  panelID: 8
-  panelCustomID: 1
   estadoInicial: 0
+  estadoActual: 1
   keyEscape: 1
+  panelID: 0
+  panelCustomID: 1
   transicion: 1
   tipoTransicion: 13
-  duracionTransicion: 0.080540486
+  duracionTransicion: 0.3
   OnTransicionInit:
     m_PersistentCalls:
       m_Calls: []

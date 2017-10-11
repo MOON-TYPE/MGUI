@@ -44,11 +44,11 @@ namespace MoonAntonio.MGUI
 		/// <summary>
 		/// <para>Estado inicial del panel.</para>
 		/// </summary>
-		[SerializeField] private EstadoPanel estadoInicial = EstadoPanel.Ocultado;          // Estado inicial del panel
+		public EstadoPanel estadoInicial = EstadoPanel.Ocultado;							// Estado inicial del panel
 		/// <summary>
 		/// <para>Estado actual del panel.</para>
 		/// </summary>
-		[SerializeField] private EstadoPanel estadoActual = EstadoPanel.Ocultado;           // Estado actual del panel
+		public EstadoPanel estadoActual = EstadoPanel.Ocultado;								// Estado actual del panel
 		/// <summary>
 		/// <para>Tecla de escape.</para>
 		/// </summary>
