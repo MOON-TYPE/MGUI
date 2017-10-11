@@ -37,14 +37,14 @@ namespace MoonAntonio.MGUI
 			// Controlar el componente
 			if (canvas != null)
 			{
-				UIAlwaysOnTop[] alwaysOnTopComponenets = canvas.gameObject.GetComponentsInChildren<UIAlwaysOnTop>();
+				UIAlwaysOnTop[] alwaysOnTopComponenentes = canvas.gameObject.GetComponentsInChildren<UIAlwaysOnTop>();
 
-				if (alwaysOnTopComponenets.Length > 0)
+				if (alwaysOnTopComponenentes.Length > 0)
 				{
 					// Ordenar por orden
-					Array.Sort(alwaysOnTopComponenets);
+					Array.Sort(alwaysOnTopComponenentes);
 
-					foreach (UIAlwaysOnTop component in alwaysOnTopComponenets)
+					foreach (UIAlwaysOnTop component in alwaysOnTopComponenentes)
 					{
 						component.transform.SetAsLastSibling();
 					}
