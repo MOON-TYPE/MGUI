@@ -30,7 +30,8 @@ namespace MoonAntonio.MGUI
 		/// <summary>
 		/// <para>Determina si el panel tiene el foco.</para>
 		/// </summary>
-		protected bool isFocus = false;														// Determina si el panel tiene el foco
+		protected bool isFocus = false;                                                     // Determina si el panel tiene el foco
+		protected static UIPanel focusPanel;
 		/// <summary>
 		/// <para>Control del tween.</para>
 		/// </summary>
@@ -297,11 +298,11 @@ namespace MoonAntonio.MGUI
 		/// <param name="instantaneo">True si se quiere instantaneo..</param>
 		public virtual void Mostrar(bool instantaneo)// Muestra el panel
 		{
-			// TODO : Comprobar si no esta activo
-			//if (!this.IsActive()) return;
+			// Comprobar si no esta activo
+			if (!this.IsActive()) return;
 
 			// Focus al panel
-			//this.Focus();
+			this.Focus();
 
 			// Comprueba si el panel esta mostrado
 			if (this.estadoActual == EstadoPanel.Mostrado) return;
@@ -324,8 +325,8 @@ namespace MoonAntonio.MGUI
 		/// <param name="instantaneo">True si se quiere instantaneo.</param>
 		public virtual void Ocultar(bool instantaneo)// Oculta el panel
 		{
-			// TODO : Comprobar si no esta activo
-			//if (!this.IsActive()) return;
+			// Comprobar si no esta activo
+			if (!this.IsActive()) return;
 
 			// Comprueba si el panel esta oculto
 			if (this.estadoActual == EstadoPanel.Ocultado) return;
@@ -355,6 +356,59 @@ namespace MoonAntonio.MGUI
 			// Iniciar tween
 			this.tweenRun.StartTween(floatTween);
 		}
+
+		/// <summary>
+		/// <para>Da el foco al panel.</para>
+		/// </summary>
+		public virtual void Focus()// Da el foco al panel
+		{
+			if (this.IsFocus) return;
+
+			// Marca como enfocado
+			this.isFocus = true;
+
+			// Obtener el foco
+			UIPanel.GetFocus(this);
+
+			// Panel hacia delante
+			this.PanelAlFrente();
+		}
+
+		/// <summary>
+		/// <para>Coloca el panel al frente.</para>
+		/// </summary>
+		public void PanelAlFrente()// Coloca el panel al frente
+		{
+			/*UIScene scene = UIUtility.FindInParents<UIScene>(this.gameObject);
+
+			// Si el objeto tiene una escena ui principal
+			if (scene != null && scene.content != null)
+			{
+				this.gameObject.transform.SetParent(scene.content, true);
+			}
+			else
+			{
+				Canvas canvas = UIUtility.FindInParents<Canvas>(this.gameObject);
+
+				// Si el objeto tiene un canvas
+				if (canvas != null)
+				{
+					this.gameObject.transform.SetParent(canvas.transform, true);
+				}
+			}
+
+			// Establecer como ultimo hijo
+			this.gameObject.transform.SetAsLastSibling();*/
+		}
+
+		/// <summary>
+		/// <para>Toggle del panel Mostrar/Ocultar.</para>
+		/// </summary>
+		public virtual void Toggle()// Toggle del panel Mostrar/Ocultar
+		{
+			if (this.estadoActual == EstadoPanel.Mostrado) this.Ocultar();
+			else this.Mostrar();
+		}
 		#endregion
 
 		#region Funcionalidad
@@ -367,6 +421,57 @@ namespace MoonAntonio.MGUI
 		public static int SortIDPanel(UIPanel panel, UIPanel panelSiguiente)// Ordena por id
 		{
 			return panel.CustomID.CompareTo(panelSiguiente.CustomID);
+		}
+
+		/// <summary>
+		/// <para>Obtiene el panel con el ID dado.</para>
+		/// </summary>
+		/// <param name="id">ID.</param>
+		public static UIPanel GetPanel(UIPanelID id)// Obtiene el panel con el ID dado
+		{
+			// Obtener el panel y tratar de encontrar el panel con el ID dado
+			foreach (UIPanel panel in UIPanel.GetPaneles())
+			{
+				if (panel.ID == id) return panel;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// <para>Obtiene el panel con el custom ID proporcionado.</para>
+		/// </summary>
+		/// <param name="id">ID.</param>
+		public static UIPanel GetPanelByCustomID(int customId)// Obtiene el panel con el custom ID proporcionado
+		{
+			// Obtener los paneles y tratar de encontrar el panel con el ID dado
+			foreach (UIPanel panel in UIPanel.GetPaneles())
+			{
+				if (panel.CustomID == customId) return panel;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// <para>Foco en el panel con el ID dado.</para>
+		/// </summary>
+		/// <param name="id">ID.</param>
+		public static void FocusPanel(UIPanelID id)// Foco en el panel con el ID dado
+		{
+			// Focus panel
+			if (UIPanel.GetPanel(id) != null) UIPanel.GetPanel(id).Focus();
+		}
+
+		/// <summary>
+		/// <para>Obtiene el focus.</para>
+		/// </summary>
+		/// <param name="panel">El panel.</param>
+		protected static void GetFocus(UIPanel panel)// Obtiene el focus
+		{
+			if (focusPanel != null) focusPanel.isFocus = false;
+
+			focusPanel = panel;
 		}
 		#endregion
 		#endregion
@@ -462,6 +567,14 @@ namespace MoonAntonio.MGUI
 		protected virtual void OnTweenCompletado()// Cuando el tween se completa
 		{
 			if (this.OnTransicionCompletada != null) this.OnTransicionCompletada.Invoke(this, this.estadoActual);
+		}
+
+		/// <summary>
+		/// <para>Determina si el panel esta activo.</para>
+		/// </summary>
+		protected virtual bool IsActive()// Determina si el panel esta activo
+		{
+			return (this.enabled && this.gameObject.activeInHierarchy);
 		}
 		#endregion
 
