@@ -9,11 +9,9 @@
 
 #region Librerias
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using MoonAntonio.Tweens;
 #endregion
@@ -24,14 +22,17 @@ namespace MoonAntonio.MGUI
 	/// <para>Control del panel de la UI</para>
 	/// </summary>
 	[DisallowMultipleComponent, ExecuteInEditMode, AddComponentMenu("MGUI/Panel", 58), RequireComponent(typeof(CanvasGroup))]
-	public class UIPanel : MonoBehaviour, IEventSystemHandler
+	public class UIPanel : MonoBehaviour, IEventSystemHandler , ISelectHandler, IPointerDownHandler
 	{
 		#region Variables Privadas
 		/// <summary>
 		/// <para>Determina si el panel tiene el foco.</para>
 		/// </summary>
 		protected bool isFocus = false;                                                     // Determina si el panel tiene el foco
-		protected static UIPanel focusPanel;
+		/// <summary>
+		/// <para>Foco del panel.</para>
+		/// </summary>
+		protected static UIPanel focusPanel;												// Foco del panel
 		/// <summary>
 		/// <para>Control del tween.</para>
 		/// </summary>
@@ -151,6 +152,15 @@ namespace MoonAntonio.MGUI
 		public bool IsFocus
 		{
 			get { return this.isFocus; }
+		}
+
+		/// <summary>
+		/// <para>Obtiene o establece el foco del panel.</para>
+		/// </summary>
+		public static UIPanel FocoPanel
+		{
+			get { return focusPanel; }
+			private set { focusPanel = value; }
 		}
 		#endregion
 
@@ -575,6 +585,26 @@ namespace MoonAntonio.MGUI
 		protected virtual bool IsActive()// Determina si el panel esta activo
 		{
 			return (this.enabled && this.gameObject.activeInHierarchy);
+		}
+
+		/// <summary>
+		/// <para>Cuando se selecciona.</para>
+		/// </summary>
+		/// <param name="eventData">Event data.</param>
+		public virtual void OnSelect(BaseEventData eventData)// Cuando se selecciona
+		{
+			// Focus en el panel
+			this.Focus();
+		}
+
+		/// <summary>
+		/// <para>Cuando se baja el puntero.</para>.
+		/// </summary>
+		/// <param name="eventData">Event data.</param>
+		public virtual void OnPointerDown(PointerEventData eventData)// Cuando se baja el puntero
+		{
+			// Focus en el panel
+			this.Focus();
 		}
 		#endregion
 
