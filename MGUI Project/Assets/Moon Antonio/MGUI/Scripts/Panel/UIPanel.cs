@@ -20,8 +20,11 @@ using MoonAntonio.Tweens;
 
 namespace MoonAntonio.MGUI
 {
+	/// <summary>
+	/// <para>Control del panel de la UI</para>
+	/// </summary>
 	[DisallowMultipleComponent, ExecuteInEditMode, AddComponentMenu("MGUI/Panel", 58), RequireComponent(typeof(CanvasGroup))]
-	public class UIPanel : MonoBehaviour, IEventSystemHandler, ISelectHandler, IPointerDownHandler
+	public class UIPanel : MonoBehaviour, IEventSystemHandler
 	{
 		#region Variables Privadas
 		/// <summary>
@@ -39,7 +42,35 @@ namespace MoonAntonio.MGUI
 		/// <summary>
 		/// <para>Estado actual del panel.</para>
 		/// </summary>
-		private Estado estadoActual = Estado.Ocultado;										// Estado actual del panel
+		private Estado estadoActual = Estado.Ocultado;                                      // Estado actual del panel
+		/// <summary>
+		/// <para>Id del panel.</para>
+		/// </summary>
+		[SerializeField] private UIPanelID panelID = UIPanelID.Ninguno;						// Id del panel
+		/// <summary>
+		/// <para>Custom id del panel.</para>
+		/// </summary>
+		[SerializeField] private int panelCustomID = 0;                                     // Custom id del panel
+		#endregion
+
+		#region Propiedades
+		/// <summary>
+		/// <para>Obtiene o establece el id del panel.</para>
+		/// </summary>
+		public UIPanelID ID
+		{
+			get { return this.panelID; }
+			set { this.panelID = value; }
+		}
+
+		/// <summary>
+		/// <para>Obtiene o establece el id custom del panel.</para>
+		/// </summary>
+		public int CustomID
+		{
+			get { return this.panelCustomID; }
+			set { this.panelCustomID = value; }
+		}
 		#endregion
 
 		#region Constructor Interno
@@ -68,6 +99,77 @@ namespace MoonAntonio.MGUI
 			// Transicion al estado inicial
 			if (Application.isPlaying) this.AplicarEstadoInicial(this.estadoInicial);
 		}
+
+		/// <summary>
+		/// <para>Inicializador de <see cref="UIPanel"/>.</para>
+		/// </summary>
+		protected virtual void Start()// Inicializador de UIPanel
+		{
+			// Asignar nuevo custom id
+			if (this.CustomID == 0) this.CustomID = UIPanel.NextCustomIDLibre;
+		}
+		#endregion
+
+		#region API
+		#region Propiedades
+		/// <summary>
+		/// <para>Obtiene el siguiente ID custom no utilizado para un panel.</para>
+		/// </summary>
+		public static int NextCustomIDLibre
+		{
+			get
+			{
+				// Obtiene los paneles
+				List<UIPanel> paneles = UIPanel.GetPaneles();
+
+				if (GetPaneles().Count > 0)
+				{
+					// Ordenar los paneles por id
+					paneles.Sort(UIPanel.SortIDPanel);
+
+					// Devolver el id del ultimo panel mas uno
+					return paneles[paneles.Count - 1].CustomID + 1;
+				}
+
+				// No paneles, return 0
+				return 0;
+			}
+		}
+		#endregion
+
+		#region Metodos Estaticos
+		/// <summary>
+		/// <para>Obtener todos los paneles de la escena (Incluyendo inactivos).</para>
+		/// </summary>
+		public static List<UIPanel> GetPaneles()// Obtener todos los paneles de la escena (Incluyendo inactivos)
+		{
+			// Paneles de la escena
+			List<UIPanel> paneles = new List<UIPanel>();
+
+			UIPanel[] ps = Resources.FindObjectsOfTypeAll<UIPanel>();
+
+			foreach (UIPanel p in ps)
+			{
+				// Compruebe si el panel esta activo en la jerarquia
+				if (p.gameObject.activeInHierarchy) paneles.Add(p);
+			}
+
+			return paneles;
+		}
+		#endregion
+
+		#region Funcionalidad
+		/// <summary>
+		/// <para>Ordena por id</para>
+		/// </summary>
+		/// <param name="panel">Un panel.</param>
+		/// <param name="panelSiguiente">Otro panel.</param>
+		/// <returns></returns>
+		public static int SortIDPanel(UIPanel panel, UIPanel panelSiguiente)// Ordena por id
+		{
+			return panel.CustomID.CompareTo(panelSiguiente.CustomID);
+		}
+		#endregion
 		#endregion
 
 		#region Metodos Internos
