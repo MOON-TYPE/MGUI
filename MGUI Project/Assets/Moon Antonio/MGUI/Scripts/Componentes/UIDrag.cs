@@ -42,7 +42,19 @@ namespace MoonAntonio.MGUI
 		/// <summary>
 		/// <para>Velocidad actual del objeto.</para>
 		/// </summary>
-		private Vector2 velocidad;													// Velocidad actual del objeto
+		private Vector2 velocidad;                                                  // Velocidad actual del objeto
+		/// <summary>
+		/// <para>Determina si se esta arrastrando.</para>
+		/// </summary>
+		private bool isDragging;                                                    // Determina si se esta arrastrando
+		/// <summary>
+		/// <para>Posicion inicial</para>
+		/// </summary>
+		private Vector2 posicionPuntoInicial = Vector2.zero;						// Posicion inicial
+		/// <summary>
+		/// <para>Posicion del objetivo.</para>
+		/// </summary>
+		private Vector2 posicionPuntoTarget = Vector2.zero;							// Posicion del objetivo
 		#endregion
 
 		#region Clases Eventos
@@ -90,7 +102,25 @@ namespace MoonAntonio.MGUI
 		{
 			this.velocidad = Vector2.zero;
 		}
+
+		/// <summary>
+		/// <para>Cuando empieza el arrastre.</para>
+		/// </summary>
+		/// <param name="data">Data.</param>
+		public void OnBeginDrag(PointerEventData data)// Cuando empieza el arrastre
+		{
+			if (!this.IsActive()) return;
+
+			RectTransformUtility.ScreenPointToLocalPointInRectangle(this.canvasRectTransform, data.position, data.pressEventCamera, out this.posicionPuntoInicial);
+			this.posicionPuntoTarget = this.target.anchoredPosition;
+			this.velocidad = Vector2.zero;
+			this.isDragging = true;
+
+			// Invoca el evento
+			if (this.onDragInit != null) this.onDragInit.Invoke(data as BaseEventData);
+		}
 		#endregion
+
 		#region Funcionalidad
 		/// <summary>
 		/// <para>Determina si el objeto esta activo.</para>
@@ -101,7 +131,6 @@ namespace MoonAntonio.MGUI
 			return base.IsActive() && this.target != null;
 		}
 		#endregion
-
 		#endregion
 
 		#region Metodos Internos
