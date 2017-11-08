@@ -119,6 +119,20 @@ namespace MoonAntonio.MGUI
 			// Invoca el evento
 			if (this.onDragInit != null) this.onDragInit.Invoke(data as BaseEventData);
 		}
+
+		/// <summary>
+		/// <para>Cuando termina el arrastre.</para>
+		/// </summary>
+		/// <param name="data">Data.</param>
+		public void OnEndDrag(PointerEventData data)// Cuando termina el arrastre
+		{
+			this.isDragging = false;
+
+			if (!this.IsActive()) return;
+
+			// Invoca el evento
+			if (this.onDragCompletada != null) this.onDragCompletada.Invoke(data as BaseEventData);
+		}
 		#endregion
 
 		#region Funcionalidad
