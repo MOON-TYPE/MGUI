@@ -39,7 +39,11 @@ namespace MoonAntonio.MGUI
 		/// <summary>
 		/// <para>Tiene incercia.</para>
 		/// </summary>
-		public bool inercia = true;													// Tiene incercia
+		public bool inercia = true;                                                 // Tiene incercia
+		/// <summary>
+		/// <para>Ratio de damp</para>
+		/// </summary>
+		private float dampeningRate = 9f;											// Ratio de damp
 		/// <summary>
 		/// <para>Determina si se quiere constrain dentro del canvas.</para>
 		/// </summary>
@@ -78,7 +82,11 @@ namespace MoonAntonio.MGUI
 		/// <summary>
 		/// <para>Posicion del objetivo.</para>
 		/// </summary>
-		private Vector2 posicionPuntoTarget = Vector2.zero;							// Posicion del objetivo
+		private Vector2 posicionPuntoTarget = Vector2.zero;                         // Posicion del objetivo
+		/// <summary>
+		/// <para>Ultima posicion registrada.</para>
+		/// </summary>
+		private Vector2 ultimaPos = Vector2.zero;									// Ultima posicion registrada
 		#endregion
 
 		#region Clases Eventos
@@ -114,6 +122,88 @@ namespace MoonAntonio.MGUI
 			// Obtener el canvas y el rect transform
 			this.canvas = UIUtil.FindInParents<Canvas>((this.target != null) ? this.target.gameObject : this.gameObject);
 			if (this.canvas != null) this.canvasRectTransform = this.canvas.transform as RectTransform;
+		}
+		#endregion
+
+		#region Actualizadores
+		/// <summary>
+		/// <para>Actualizacion final de <see cref="UIDrag"/>.</para>
+		/// </summary>
+		protected virtual void LateUpdate()// Actualizacion final de UIDrag
+		{
+			if (!this.target) return;
+
+			// Captura la velocidad de nuestro arrastre para ser utilizado por la inercia
+			if (this.isDragging && this.inercia)
+			{
+				Vector3 to = (this.target.anchoredPosition - this.ultimaPos) / Time.unscaledDeltaTime;
+				this.velocidad = Vector3.Lerp(this.velocidad, to, Time.unscaledDeltaTime * 10f);
+			}
+
+			this.ultimaPos = this.target.anchoredPosition;
+
+			// Handle de inercia solo cuando no se arrastra
+			if (!this.isDragging && this.velocidad != Vector2.zero)
+			{
+				Vector2 anchoredPosition = this.target.anchoredPosition;
+
+				// Dampen de inercia
+				this.Dampen(ref this.velocidad, this.dampeningRate, Time.unscaledDeltaTime);
+
+				for (int i = 0; i < 2; i++)
+				{
+					// Calcular la inercia
+					if (this.inercia)
+					{
+						anchoredPosition[i] += this.velocidad[i] * Time.unscaledDeltaTime;
+					}
+					else
+					{
+						this.velocidad[i] = 0f;
+					}
+				}
+
+				if (this.velocidad != Vector2.zero)
+				{
+					// Restringir movimiento
+					if (!this.horizontal)
+					{
+						anchoredPosition.x = this.target.anchoredPosition.x;
+					}
+					if (!this.vertical)
+					{
+						anchoredPosition.y = this.target.anchoredPosition.y;
+					}
+
+					// Si el objetivo esta restringido dentro de su canvas
+					if (this.isConstrainConCanvas && this.isConstrainInercia && this.canvasRectTransform != null)
+					{
+						Vector3[] canvasCorners = new Vector3[4];
+						this.canvasRectTransform.GetWorldCorners(canvasCorners);
+
+						Vector3[] targetCorners = new Vector3[4];
+						this.target.GetWorldCorners(targetCorners);
+
+						// Fuera de la pantalla hacia la izquierda o hacia la derecha
+						if (targetCorners[0].x < canvasCorners[0].x || targetCorners[2].x > canvasCorners[2].x)
+						{
+							anchoredPosition.x = this.target.anchoredPosition.x;
+						}
+
+						// Fuera de la pantalla hacia arriba o hacia abajo
+						if (targetCorners[3].y < canvasCorners[3].y || targetCorners[1].y > canvasCorners[1].y)
+						{
+							anchoredPosition.y = this.target.anchoredPosition.y;
+						}
+					}
+
+					// Aplicar inercia
+					if (anchoredPosition != this.target.anchoredPosition)
+					{
+						this.target.anchoredPosition = anchoredPosition;
+					}
+				}
+			}
 		}
 		#endregion
 
@@ -221,6 +311,29 @@ namespace MoonAntonio.MGUI
 		}
 
 		/// <summary>
+		/// <para>Dampen.</para>
+		/// </summary>
+		/// <param name="velocidad">Velocidad.</param>
+		/// <param name="fuerza">Fuerza.</param>
+		/// <param name="delta">Delta.</param>
+		protected Vector3 Dampen(ref Vector2 velocidad, float fuerza, float delta)// Dampen
+		{
+			if (delta > 1f)
+			{
+				delta = 1f;
+			}
+
+			float dampeningFactor = 1f - fuerza * 0.001f;
+			int ms = Mathf.RoundToInt(delta * 1000f);
+			float totalDampening = Mathf.Pow(dampeningFactor, ms);
+			Vector2 vTotal = velocidad * ((totalDampening - 1f) / Mathf.Log(dampeningFactor));
+
+			velocidad = velocidad * totalDampening;
+
+			return vTotal * 0.06f;
+		}
+
+		/// <summary>
 		/// <para>Clamps al canvas.</para>
 		/// </summary>
 		/// <returns>Canvas.</returns>
@@ -240,6 +353,28 @@ namespace MoonAntonio.MGUI
 
 			// Default
 			return Posicion;
+		}
+
+		/// <summary>
+		/// <para>Clamps a la pantalla.</para>
+		/// </summary>
+		/// <returns>Pantalla.</returns>
+		/// <param name="posicion">Posicion.</param>
+		protected Vector2 ClampToScreen(Vector2 posicion)// Clamps a la pantalla
+		{
+			if (this.canvas != null)
+			{
+				if (this.canvas.renderMode == RenderMode.ScreenSpaceOverlay || this.canvas.renderMode == RenderMode.ScreenSpaceCamera)
+				{
+					float clampedX = Mathf.Clamp(posicion.x, 0f, Screen.width);
+					float clampedY = Mathf.Clamp(posicion.y, 0f, Screen.height);
+
+					return new Vector2(clampedX, clampedY);
+				}
+			}
+
+			// Default
+			return posicion;
 		}
 		#endregion
 	}
