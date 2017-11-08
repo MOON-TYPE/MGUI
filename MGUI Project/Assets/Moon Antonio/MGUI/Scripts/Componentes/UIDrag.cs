@@ -27,7 +27,31 @@ namespace MoonAntonio.MGUI
 		/// <summary>
 		/// <para>Objetivo del arrastre.</para>
 		/// </summary>
-		public RectTransform target;												// Objetivo del arrastre
+		public RectTransform target;                                                // Objetivo del arrastre
+		/// <summary>
+		/// <para>Se puede mover en horizontal.</para>
+		/// </summary>
+		public bool horizontal = true;												// Se puede mover en horizontal
+		/// <summary>
+		/// <para>Se puede mover en vertical.</para>
+		/// </summary>
+		public bool vertical = true;												// Se puede mover en vertical
+		/// <summary>
+		/// <para>Tiene incercia.</para>
+		/// </summary>
+		public bool inercia = true;													// Tiene incercia
+		/// <summary>
+		/// <para>Determina si se quiere constrain dentro del canvas.</para>
+		/// </summary>
+		public bool isConstrainConCanvas = false;									// Determina si se quiere constrain dentro del canvas
+		/// <summary>
+		/// <para>Determina si que quiere constrain cuando se arrastra.</para>
+		/// </summary>
+		public bool isConstrainDrag = true;											// Determina si que quiere constrain cuando se arrastra
+		/// <summary>
+		/// <para>Determina si se quiere constrain con la inercia.</para>
+		/// </summary>
+		public bool isConstrainInercia = true;										// Determina si se quiere constrain con la inercia
 		#endregion
 
 		#region Variables Privadas
@@ -133,6 +157,41 @@ namespace MoonAntonio.MGUI
 			// Invoca el evento
 			if (this.onDragCompletada != null) this.onDragCompletada.Invoke(data as BaseEventData);
 		}
+
+		/// <summary>
+		/// <para>Cuando se esta arrastrando.</para>
+		/// </summary>
+		/// <param name="data">Data.</param>
+		public void OnDrag(PointerEventData data)// Cuando se esta arrastrando
+		{
+			if (!this.IsActive() || this.canvas == null) return;
+
+			Vector2 mousePos;
+			RectTransformUtility.ScreenPointToLocalPointInRectangle(this.canvasRectTransform, data.position, data.pressEventCamera, out mousePos);
+
+			if (this.isConstrainConCanvas && this.isConstrainDrag)
+			{
+				mousePos = this.ClampToCanvas(mousePos);
+			}
+
+			Vector2 newPosition = this.posicionPuntoTarget + (mousePos - this.posicionPuntoInicial);
+
+			// Restringir movimiento
+			if (!this.horizontal)
+			{
+				newPosition.x = this.target.anchoredPosition.x;
+			}
+			if (!this.vertical)
+			{
+				newPosition.y = this.target.anchoredPosition.y;
+			}
+
+			// Aplicar la posicion
+			this.target.anchoredPosition = newPosition;
+
+			// Invocar el evento
+			if (this.onDrag != null) this.onDrag.Invoke(data as BaseEventData);
+		}
 		#endregion
 
 		#region Funcionalidad
@@ -159,6 +218,28 @@ namespace MoonAntonio.MGUI
 			// Obtener el canvas y el rect transform
 			this.canvas = UIUtil.FindInParents<Canvas>((this.target != null) ? this.target.gameObject : this.gameObject);
 			if (this.canvas != null) this.canvasRectTransform = this.canvas.transform as RectTransform;
+		}
+
+		/// <summary>
+		/// <para>Clamps al canvas.</para>
+		/// </summary>
+		/// <returns>Canvas.</returns>
+		/// <param name="Posicion">Posicion.</param>
+		protected Vector2 ClampToCanvas(Vector2 Posicion)// Clamps al canvas
+		{
+			if (this.canvasRectTransform != null)
+			{
+				Vector3[] esquinas = new Vector3[4];
+				this.canvasRectTransform.GetLocalCorners(esquinas);
+
+				float clampedX = Mathf.Clamp(Posicion.x, esquinas[0].x, esquinas[2].x);
+				float clampedY = Mathf.Clamp(Posicion.y, esquinas[3].y, esquinas[1].y);
+
+				return new Vector2(clampedX, clampedY);
+			}
+
+			// Default
+			return Posicion;
 		}
 		#endregion
 	}
