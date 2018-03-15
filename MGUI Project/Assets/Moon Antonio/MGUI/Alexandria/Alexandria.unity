@@ -449,7 +449,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9987a87d1e56c8a42b1b0c8c31ac0da4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 1745760346}
+  horizontal: 1
+  vertical: 1
+  inercia: 1
+  isConstrainConCanvas: 0
+  isConstrainDrag: 1
+  isConstrainInercia: 1
   onDragInit:
     m_PersistentCalls:
       m_Calls: []
