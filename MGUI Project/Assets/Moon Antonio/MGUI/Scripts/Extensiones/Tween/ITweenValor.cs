@@ -7,7 +7,7 @@
 // Ultima Mod:		Version Inicial												\\
 //******************************************************************************\\
 
-namespace MoonAntonio.Tweens
+namespace MoonAntonio.Tweens.Interfazes
 {
 	#region Interfaz
 	internal interface ITweenValor

@@ -10,6 +10,7 @@
 #region Librerias
 using UnityEngine;
 using System.Collections;
+using MoonAntonio.Tweens.Interfazes;
 #endregion
 
 namespace MoonAntonio.Tweens
