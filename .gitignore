@@ -59,6 +59,8 @@ MGUI Project/Assets/ThirdParty/*
 MGUI Project/Assets/ThirdParty.meta
 MGUI Project/Assets/Plugins/*
 MGUI Project/Assets/Plugins.meta
+Test Project/*
+
  
 # GITEYE
 *.project
