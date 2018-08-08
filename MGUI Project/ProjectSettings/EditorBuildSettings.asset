@@ -4,4 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Moon Antonio/MGUI/Scenes/1 - main.unity
+    guid: 4ee468ccc93619547acadb126f5dcc41
+  - enabled: 1
+    path: Assets/Moon Antonio/MGUI/Scenes/2 - complejo.unity
+    guid: 7d4a3fddc260af0478b84ce314ba6cb6
