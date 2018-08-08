@@ -13,12 +13,6 @@ Extension de UGUI
 
 Extension para UGUI Unity 2017+, con nuevas funcionalidades para desarrollar una UI flexible y agil.
 
-
-Para mas informacion, [aqui][2] la wiki. Aunque aun esta incompleta. Se ira agregando nueva info con el tiempo.
-
 ---
 
-
-
-
-[2]: https://github.com/MOON-TYPE/MGUI/wiki
+<p align="center"><img src="https://github.com/MOON-TYPE/MGUI/blob/master/res/prev.gif?raw=true"></p>
